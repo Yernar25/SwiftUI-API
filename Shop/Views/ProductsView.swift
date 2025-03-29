@@ -7,13 +7,12 @@
 
 import SwiftUI
 
-struct Products: View {
-    @State var url: String
-    @State private var products: [Product] = []
-    
+struct ProductsView: View {
+    @StateObject private var viewModel = ProductsViewModel()
+    @State var urlProducts: String
     
     var body: some View {
-        List(products) { product in
+        List(viewModel.products) { product in
             HStack{
                 AsyncImage(url: URL(string: product.thumbnail)){ image in
                     switch image {
@@ -30,7 +29,7 @@ struct Products: View {
                     @unknown default:
                         EmptyView()
                     }
-                }
+                } 
                 VStack (alignment: .leading){
                     Text(product.title)
                         .foregroundStyle(Color.gray)
@@ -65,42 +64,15 @@ struct Products: View {
                     }
                 }.navigationTitle(product.category)  
             }
-        }.onAppear(){
-            fetchProducts()
+        }.task {
+            await viewModel.loadProducts(url: urlProducts)
         }
         .listRowSpacing(8)
     }
-    
-    func fetchProducts() {
-        guard let url = URL(string: self.url)
-        else {
-            print("Error")
-            return
-        }
-        
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            if let error = error {
-                print(error)
-                return
-            }
-            guard let data = data else {
-                print("Error3")
-                return
-            }
-            print(data)
-            do {
-                let decodedResponse = try JSONDecoder().decode(APIProduct.self, from: data)
-                self.products = decodedResponse.products
-            } catch {
-                print ("Ошибка2: \(error.localizedDescription)")
-            }
-        }.resume()
-    }
-    
 }
 
 
 
-//#Preview {
-//    Products()
-//}
+#Preview {
+    ProductsView(urlProducts: "")
+}

@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ReviewsView: View {
+    @StateObject private var viewModel = ReviewsViewModel()
     @State var product: Product
     var body: some View {
         List {
@@ -33,7 +34,7 @@ struct ReviewsView: View {
                                 .font(.system(size: 12))
                                 .foregroundStyle(Color.gray)
                             Spacer()
-                            Text(convertISODate(product.reviews![index].date))
+                            Text(viewModel.convertISODate(product.reviews![index].date))
                                 .font(.system(size: 12))
                                 .foregroundStyle(Color.gray)
                         }
@@ -47,19 +48,7 @@ struct ReviewsView: View {
         }
         .navigationTitle("Reviews")
     }
-    
-    func convertISODate(_ isoDate: String) -> String {
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds] // Поддержка миллисекунд
-        
-        if let date = formatter.date(from: isoDate) {
-            let outputFormatter = DateFormatter()
-            outputFormatter.dateFormat = "dd.MM.yyyy" // Формат, который тебе нужен
-            return outputFormatter.string(from: date)
-        }
-        
-        return "Invalid date"
-    }
+
 }
 
 //#Preview {

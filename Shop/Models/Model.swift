@@ -31,7 +31,6 @@ struct Product:Codable, Identifiable {
 }
 
 struct Reviews: Codable {
-    //var id = UUID()
     var rating: Int
     var comment: String
     var date: String
