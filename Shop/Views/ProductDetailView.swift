@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import SnapKit
 struct ProductDetailView: View {
     @State var product: Product
     
